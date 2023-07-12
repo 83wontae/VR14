@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Public/Tool/EventInterface.h"
 #include "GameFramework/Actor.h"
 #include "MoveLeftRight.generated.h"
 
 UCLASS()
-class HELLOUNREALCODE_API AMoveLeftRight : public AActor
+class HELLOUNREALCODE_API AMoveLeftRight : public AActor, public IEventInterface
 {
 	GENERATED_BODY()
 	
@@ -24,6 +25,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void EventOverlap(bool IsOverlap);
+
+	virtual void EventOverlap_Implementation(bool IsOverlap) override;
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USceneComponent* Root;
 
@@ -31,4 +38,6 @@ public:
 	class UStaticMeshComponent* StaticMesh;
 
 	bool IsMoveRight;
+
+	bool IsPlay;
 };

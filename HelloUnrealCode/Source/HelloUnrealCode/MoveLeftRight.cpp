@@ -26,6 +26,7 @@ AMoveLeftRight::AMoveLeftRight()
 	StaticMesh->SetRelativeTransform(FTransform::Identity);
 
 	IsMoveRight = true;
+	IsPlay = false;
 }
 
 // Called when the game starts or when spawned
@@ -40,17 +41,29 @@ void AMoveLeftRight::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsMoveRight)
+	if(IsPlay)
 	{
-		StaticMesh->AddRelativeLocation(FVector(1, 0, 0));
-		if (StaticMesh->GetRelativeLocation().X > 100)
-			IsMoveRight = false;
+		if (IsMoveRight)
+		{
+			StaticMesh->AddRelativeLocation(FVector(1, 0, 0));
+			if (StaticMesh->GetRelativeLocation().X > 100)
+				IsMoveRight = false;
+		}
+		else
+		{
+			StaticMesh->AddRelativeLocation(FVector(-1, 0, 0));
+			if (StaticMesh->GetRelativeLocation().X < 0)
+				IsMoveRight = true;
+		}
 	}
-	else
-	{
-		StaticMesh->AddRelativeLocation(FVector(-1, 0, 0));
-		if (StaticMesh->GetRelativeLocation().X < 0)
-			IsMoveRight = true;
-	}
+	
+}
+
+void AMoveLeftRight::EventOverlap_Implementation(bool IsOverlap)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, FString::Printf(TEXT("EventOverlap IsOverlap=%s")
+		, IsOverlap ? TEXT("True") : TEXT("False")));
+
+	IsPlay = IsOverlap;
 }
 
