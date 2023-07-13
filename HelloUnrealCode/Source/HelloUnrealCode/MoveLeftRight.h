@@ -31,7 +31,7 @@ public:
 	virtual void EventOverlap_Implementation(bool IsOverlap) override;
 
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 	void AAA();
 
 	virtual void AAA_Implementation();

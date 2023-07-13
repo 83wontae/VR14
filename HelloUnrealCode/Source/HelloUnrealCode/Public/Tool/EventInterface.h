@@ -22,7 +22,7 @@ class HELLOUNREALCODE_API IEventInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void EventOverlap(bool IsOverlap);
 
 	virtual void EventOverlap_Implementation(bool IsOverlap) {};
