@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "EventComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FDele_Multi_EventOverlap_OneParam, bool);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDele_CompEventOverlap_OneParam, bool, IsOverlap);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HELLOUNREALCODE_API UEventComponent : public UActorComponent
@@ -29,5 +29,6 @@ public:
 	UFUNCTION()
 	void OnEventOverlap(bool isOverlap);
 
-	FDele_Multi_EventOverlap_OneParam FDele_EventOverlap;
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
+	FDele_CompEventOverlap_OneParam FDele_EventOverlap;
 };

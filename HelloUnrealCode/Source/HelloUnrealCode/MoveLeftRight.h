@@ -30,6 +30,12 @@ public:
 
 	virtual void EventOverlap_Implementation(bool IsOverlap) override;
 
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void AAA();
+
+	virtual void AAA_Implementation();
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USceneComponent* Root;

@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "SwitchTool.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FDele_Multi_EventOverlap_OneParam, bool);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDele_Multi_EventOverlap_OneParam, bool, IsOverlap);
 
 UCLASS()
 class HELLOUNREALCODE_API ASwitchTool : public AActor
@@ -42,5 +42,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<TObjectPtr<AActor>> Actors;
 
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
 	FDele_Multi_EventOverlap_OneParam FDele_EventOverlap;
 };

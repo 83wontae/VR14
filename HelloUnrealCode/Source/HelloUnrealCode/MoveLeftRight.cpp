@@ -67,3 +67,7 @@ void AMoveLeftRight::EventOverlap_Implementation(bool IsOverlap)
 	IsPlay = IsOverlap;
 }
 
+void AMoveLeftRight::AAA_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("AAA"));
+}

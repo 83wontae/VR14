@@ -19,9 +19,9 @@ void AMoveRect::BeginPlay()
 	Super::BeginPlay();
 	
 	if(IsValid(TargetSwitch))
-		TargetSwitch->FDele_EventOverlap.AddUFunction(this, FName("OnEventOverlap"));
+		TargetSwitch->FDele_EventOverlap.AddDynamic(this, &AMoveRect::OnEventOverlap);
 
-	EventComp->FDele_EventOverlap.AddUFunction(this, FName("OnCompEventOverlap"));
+	EventComp->FDele_EventOverlap.AddDynamic(this, &AMoveRect::OnCompEventOverlap);
 }
 
 // Called every frame
