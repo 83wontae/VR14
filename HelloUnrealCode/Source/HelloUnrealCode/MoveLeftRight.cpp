@@ -33,7 +33,6 @@ AMoveLeftRight::AMoveLeftRight()
 void AMoveLeftRight::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -65,6 +64,8 @@ void AMoveLeftRight::EventOverlap_Implementation(bool IsOverlap)
 		, IsOverlap ? TEXT("True") : TEXT("False")));
 
 	IsPlay = IsOverlap;
+
+	AAA();
 }
 
 void AMoveLeftRight::AAA_Implementation()
