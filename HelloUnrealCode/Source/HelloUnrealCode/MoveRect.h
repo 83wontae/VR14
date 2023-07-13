@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Public/Tool/SwitchTool.h"
 #include "GameFramework/Actor.h"
 #include "MoveRect.generated.h"
 
@@ -32,5 +33,19 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void OnEventOverlap(bool IsOverlap);
+
+	UFUNCTION(BlueprintCallable)
+	void OnCompEventOverlap(bool IsOverlap);
+
+public:
 	EN_MoveType MoveType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<ASwitchTool> TargetSwitch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UEventComponent* EventComp;
 };

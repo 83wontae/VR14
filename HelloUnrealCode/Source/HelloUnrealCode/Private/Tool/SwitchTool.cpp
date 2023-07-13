@@ -3,6 +3,7 @@
 
 #include "Tool/SwitchTool.h"
 #include "Tool/EventInterface.h"
+#include "Tool/EventComponent.h"
 
 // Sets default values
 ASwitchTool::ASwitchTool()
@@ -49,8 +50,16 @@ void ASwitchTool::OnSwitchBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		{
 			InterfaceObj->Execute_EventOverlap(a, true);
 		}
+
+		UEventComponent* eventComponent = Cast<UEventComponent>(a->GetComponentByClass(UEventComponent::StaticClass()));
+		if (IsValid(eventComponent))
+		{
+			eventComponent->OnEventOverlap(true);
+		}
 	}
 	
+	if(FDele_EventOverlap.IsBound())
+		FDele_EventOverlap.Broadcast(true);
 }
 
 void ASwitchTool::OnSwitchEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -64,6 +73,15 @@ void ASwitchTool::OnSwitchEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 		{
 			InterfaceObj->Execute_EventOverlap(a, false);
 		}
+
+		UEventComponent* eventComponent = Cast<UEventComponent>(a->GetComponentByClass(UEventComponent::StaticClass()));
+		if (IsValid(eventComponent))
+		{
+			eventComponent->OnEventOverlap(false);
+		}
 	}
+
+	if (FDele_EventOverlap.IsBound())
+		FDele_EventOverlap.Broadcast(false);
 }
 
