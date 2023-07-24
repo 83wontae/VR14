@@ -9,6 +9,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -51,6 +53,13 @@ AShootingGameCodeCharacter::AShootingGameCodeCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+void AShootingGameCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AShootingGameCodeCharacter, PlayerRotation);
+}
+
 void AShootingGameCodeCharacter::BeginPlay()
 {
 	// Call the base class  
@@ -64,6 +73,27 @@ void AShootingGameCodeCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+}
+
+void AShootingGameCodeCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (HasAuthority() == true)
+	{
+		PlayerRotation = GetControlRotation();
+	}
+}
+
+FRotator AShootingGameCodeCharacter::GetPlayerRotation()
+{
+	ACharacter* pChar0 = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (pChar0 == this)
+	{
+		return GetControlRotation();
+	}
+
+	return PlayerRotation;
 }
 
 //////////////////////////////////////////////////////////////////////////
