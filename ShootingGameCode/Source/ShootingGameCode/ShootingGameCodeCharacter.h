@@ -37,6 +37,14 @@ class AShootingGameCodeCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ShootAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ReloadAction;
+
 public:
 	AShootingGameCodeCharacter();
 	
@@ -49,6 +57,11 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 			
+	/** Called for looking input */
+	void Shoot(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void Reload(const FInputActionValue& Value);
 
 protected:
 	// APawn interface
@@ -58,6 +71,19 @@ protected:
 	virtual void BeginPlay();
 
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	UFUNCTION(Server, Reliable)
+	void ReqShoot();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ResShoot();
+
+	UFUNCTION(Server, Reliable)
+	void ReqReload();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ResReload();
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -71,5 +97,12 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FRotator GetPlayerRotation();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* ShootMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* ReloadMontage;
 };
 

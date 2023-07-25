@@ -85,6 +85,32 @@ void AShootingGameCodeCharacter::Tick(float DeltaTime)
 	}
 }
 
+void AShootingGameCodeCharacter::ReqReload_Implementation()
+{
+	ResReload();
+}
+
+void AShootingGameCodeCharacter::ResReload_Implementation()
+{
+	if (IsValid(ReloadMontage) == false)
+		return;
+
+	PlayAnimMontage(ReloadMontage);
+}
+
+void AShootingGameCodeCharacter::ReqShoot_Implementation()
+{
+	ResShoot();
+}
+
+void AShootingGameCodeCharacter::ResShoot_Implementation()
+{
+	if (IsValid(ShootMontage) == false)
+		return;
+
+	PlayAnimMontage(ShootMontage);
+}
+
 FRotator AShootingGameCodeCharacter::GetPlayerRotation()
 {
 	ACharacter* pChar0 = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -113,6 +139,12 @@ void AShootingGameCodeCharacter::SetupPlayerInputComponent(class UInputComponent
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AShootingGameCodeCharacter::Look);
+
+		//Shoot
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::Shoot);
+
+		//Reload
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::Reload);
 
 	}
 
@@ -152,6 +184,16 @@ void AShootingGameCodeCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AShootingGameCodeCharacter::Shoot(const FInputActionValue& Value)
+{
+	ReqShoot();
+}
+
+void AShootingGameCodeCharacter::Reload(const FInputActionValue& Value)
+{
+	ReqReload();
 }
 
 
