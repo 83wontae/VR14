@@ -11,7 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
-
+#include "Weapon.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCodeCharacter
@@ -92,10 +92,12 @@ void AShootingGameCodeCharacter::ReqReload_Implementation()
 
 void AShootingGameCodeCharacter::ResReload_Implementation()
 {
-	if (IsValid(ReloadMontage) == false)
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj == nullptr)
 		return;
 
-	PlayAnimMontage(ReloadMontage);
+	InterfaceObj->Execute_EventReload(EquipWeapon);
 }
 
 void AShootingGameCodeCharacter::ReqShoot_Implementation()
@@ -105,10 +107,26 @@ void AShootingGameCodeCharacter::ReqShoot_Implementation()
 
 void AShootingGameCodeCharacter::ResShoot_Implementation()
 {
-	if (IsValid(ShootMontage) == false)
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj == nullptr)
 		return;
 
-	PlayAnimMontage(ShootMontage);
+	InterfaceObj->Execute_EventTrigger(EquipWeapon);
+}
+
+void AShootingGameCodeCharacter::EquipTestWeapon(TSubclassOf<class AWeapon> WeaponClass)
+{
+	EquipWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, FVector(0, 0, 0), FRotator(0, 0, 0));
+
+	AWeapon* pWeapon = Cast<AWeapon>(EquipWeapon);
+	if (IsValid(pWeapon) == false)
+		return;
+
+	pWeapon->OwnChar = this;
+
+	EquipWeapon->AttachToComponent(GetMesh(),
+		FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("weapon"));
 }
 
 FRotator AShootingGameCodeCharacter::GetPlayerRotation()

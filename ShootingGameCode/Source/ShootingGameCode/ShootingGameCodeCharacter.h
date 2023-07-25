@@ -86,6 +86,10 @@ public:
 	void ResReload();
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void EquipTestWeapon(TSubclassOf<class AWeapon> WeaponClass);
+
+public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
@@ -98,11 +102,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	FRotator GetPlayerRotation();
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* ShootMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* ReloadMontage;
+	UPROPERTY()
+	AActor* EquipWeapon;
 };
 
