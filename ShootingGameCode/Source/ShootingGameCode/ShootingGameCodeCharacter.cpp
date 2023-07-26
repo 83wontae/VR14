@@ -58,6 +58,7 @@ void AShootingGameCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProp
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AShootingGameCodeCharacter, PlayerRotation);
+	DOREPLIFETIME(AShootingGameCodeCharacter, EquipWeapon);
 }
 
 void AShootingGameCodeCharacter::BeginPlay()
@@ -115,6 +116,51 @@ void AShootingGameCodeCharacter::ResShoot_Implementation()
 	InterfaceObj->Execute_EventTrigger(EquipWeapon);
 }
 
+void AShootingGameCodeCharacter::ReqPressF_Implementation()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("ReqPressF_Implementation"));
+	AActor* nearestWeapon = FindNearestWeapon();
+
+	if (IsValid(nearestWeapon) == false)
+		return;
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("FindNearestWeapon"));
+
+	EquipWeapon = nearestWeapon;
+
+	OnRep_EquipWeapon();
+}
+
+void AShootingGameCodeCharacter::OnRep_EquipWeapon()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("OnRep_EquipWeapon"));
+	bUseControllerRotationYaw = IsValid(EquipWeapon);
+
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj == nullptr)
+		return;
+
+	InterfaceObj->Execute_EventPickUp(EquipWeapon, this);
+}
+
+void AShootingGameCodeCharacter::ReqDrop_Implementation()
+{
+	ResDrop();
+}
+
+void AShootingGameCodeCharacter::ResDrop_Implementation()
+{
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj == nullptr)
+		return;
+
+	InterfaceObj->Execute_EventDrop(EquipWeapon, this);
+
+	EquipWeapon = nullptr;
+}
+
 void AShootingGameCodeCharacter::EquipTestWeapon(TSubclassOf<class AWeapon> WeaponClass)
 {
 	EquipWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, FVector(0, 0, 0), FRotator(0, 0, 0));
@@ -162,6 +208,11 @@ FRotator AShootingGameCodeCharacter::GetPlayerRotation()
 	return PlayerRotation;
 }
 
+bool AShootingGameCodeCharacter::IsEquip()
+{
+	return IsValid(EquipWeapon);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -188,6 +239,9 @@ void AShootingGameCodeCharacter::SetupPlayerInputComponent(class UInputComponent
 
 		//PressF
 		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::PressF);
+
+		//Drop
+		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::Drop);
 	}
 
 }
@@ -240,19 +294,13 @@ void AShootingGameCodeCharacter::Reload(const FInputActionValue& Value)
 
 void AShootingGameCodeCharacter::PressF(const FInputActionValue& Value)
 {
-	AActor* nearestWeapon = FindNearestWeapon();
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("PressF"));
+	ReqPressF();
+}
 
-	if (IsValid(nearestWeapon) == false)
-		return;
-
-	EquipWeapon = nearestWeapon;
-
-	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
-
-	if (InterfaceObj == nullptr)
-		return;
-
-	InterfaceObj->Execute_EventPickUp(EquipWeapon, this);
+void AShootingGameCodeCharacter::Drop(const FInputActionValue& Value)
+{
+	ReqDrop();
 }
 
 
