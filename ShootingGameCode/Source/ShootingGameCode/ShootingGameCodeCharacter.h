@@ -45,6 +45,10 @@ class AShootingGameCodeCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ReloadAction;
 
+	/** PressF Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* PressFAction;
+
 public:
 	AShootingGameCodeCharacter();
 	
@@ -62,6 +66,9 @@ protected:
 
 	/** Called for looking input */
 	void Reload(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void PressF(const FInputActionValue& Value);
 
 protected:
 	// APawn interface
@@ -88,6 +95,9 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void EquipTestWeapon(TSubclassOf<class AWeapon> WeaponClass);
+
+	UFUNCTION(BlueprintCallable)
+	AActor* FindNearestWeapon();
 
 public:
 	/** Returns CameraBoom subobject **/

@@ -12,7 +12,8 @@ AWeapon::AWeapon()
 	PrimaryActorTick.bCanEverTick = true;
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	WeaponMesh->SetCollisionProfileName("OverlapAllDynamic");
+	WeaponMesh->SetCollisionProfileName("weapon");
+	WeaponMesh->SetSimulatePhysics(true);
 
 	SetRootComponent(WeaponMesh);
 }
@@ -56,5 +57,14 @@ void AWeapon::EventShoot_Implementation()
 
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ShootSound,
 		WeaponMesh->GetSocketLocation("muzzle"));
+}
+
+void AWeapon::EventPickUp_Implementation(ACharacter* targetChar)
+{
+	OwnChar = targetChar;
+
+	WeaponMesh->SetSimulatePhysics(false);
+
+	AttachToComponent(targetChar->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("weapon"));
 }
 

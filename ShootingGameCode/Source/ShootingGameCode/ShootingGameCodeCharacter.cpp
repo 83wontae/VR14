@@ -129,6 +129,28 @@ void AShootingGameCodeCharacter::EquipTestWeapon(TSubclassOf<class AWeapon> Weap
 		FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("weapon"));
 }
 
+AActor* AShootingGameCodeCharacter::FindNearestWeapon()
+{
+	TArray<AActor*> actors;
+	GetCapsuleComponent()->GetOverlappingActors(actors, AWeapon::StaticClass());
+
+	double nearestLength = 99999999.0f;
+	AActor* nearestWeapon = nullptr;
+
+	for (AActor* target : actors)
+	{
+		double distance = FVector::Dist(target->GetActorLocation(), GetActorLocation());
+
+		if (nearestLength < distance)
+			continue;
+
+		nearestLength = distance;
+		nearestWeapon = target;
+	}
+
+	return nearestWeapon;
+}
+
 FRotator AShootingGameCodeCharacter::GetPlayerRotation()
 {
 	ACharacter* pChar0 = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -164,6 +186,8 @@ void AShootingGameCodeCharacter::SetupPlayerInputComponent(class UInputComponent
 		//Reload
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::Reload);
 
+		//PressF
+		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::PressF);
 	}
 
 }
@@ -212,6 +236,23 @@ void AShootingGameCodeCharacter::Shoot(const FInputActionValue& Value)
 void AShootingGameCodeCharacter::Reload(const FInputActionValue& Value)
 {
 	ReqReload();
+}
+
+void AShootingGameCodeCharacter::PressF(const FInputActionValue& Value)
+{
+	AActor* nearestWeapon = FindNearestWeapon();
+
+	if (IsValid(nearestWeapon) == false)
+		return;
+
+	EquipWeapon = nearestWeapon;
+
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj == nullptr)
+		return;
+
+	InterfaceObj->Execute_EventPickUp(EquipWeapon, this);
 }
 
 

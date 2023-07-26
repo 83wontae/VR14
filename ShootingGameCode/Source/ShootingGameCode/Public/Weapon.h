@@ -40,6 +40,11 @@ public:
 
 	virtual void EventShoot_Implementation() override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void EventPickUp(ACharacter* targetChar);
+
+	virtual void EventPickUp_Implementation(ACharacter* targetChar) override;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* WeaponMesh;
