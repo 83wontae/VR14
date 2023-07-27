@@ -185,6 +185,12 @@ AActor* AShootingGameCodeCharacter::FindNearestWeapon()
 
 	for (AActor* target : actors)
 	{
+		bool IsCanPickUp = false;
+		IWeaponInterface* i = Cast<IWeaponInterface>(target);
+		i->Execute_IsCanPickUp(target, IsCanPickUp);
+		if (IsCanPickUp == false)
+			continue;
+
 		double distance = FVector::Dist(target->GetActorLocation(), GetActorLocation());
 
 		if (nearestLength < distance)
