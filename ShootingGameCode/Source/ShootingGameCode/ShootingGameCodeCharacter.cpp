@@ -127,6 +127,7 @@ void AShootingGameCodeCharacter::ReqPressF_Implementation()
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("FindNearestWeapon"));
 
 	EquipWeapon = nearestWeapon;
+	EquipWeapon->SetOwner(GetController());
 
 	OnRep_EquipWeapon();
 }

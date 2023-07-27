@@ -4,6 +4,8 @@
 #include "Weapon.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -60,6 +62,15 @@ void AWeapon::EventShoot_Implementation()
 
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ShootSound,
 		WeaponMesh->GetSocketLocation("muzzle"));
+
+	APlayerController* shooter = GetWorld()->GetFirstPlayerController();
+
+	FVector CameraLoc = shooter->PlayerCameraManager->GetCameraLocation();
+	FVector CameraForward = shooter->PlayerCameraManager->GetActorForwardVector();
+	FVector Start = (CameraForward * GetFireStartLength()) + CameraLoc;
+	FVector End = (CameraForward * 5000.0f) + CameraLoc;
+
+	ReqShoot(Start, End);
 }
 
 void AWeapon::EventPickUp_Implementation(ACharacter* targetChar)
@@ -89,5 +100,35 @@ void AWeapon::IsCanPickUp_Implementation(bool& IsCanPickUp)
 	}
 
 	IsCanPickUp = true;
+}
+
+void AWeapon::ReqShoot_Implementation(FVector vStart, FVector vEnd)
+{
+	FHitResult result;
+	FCollisionObjectQueryParams collisionObjectQuery;
+	collisionObjectQuery.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
+	collisionObjectQuery.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
+	collisionObjectQuery.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldDynamic);
+	collisionObjectQuery.AddObjectTypesToQuery(ECollisionChannel::ECC_PhysicsBody);
+	collisionObjectQuery.AddObjectTypesToQuery(ECollisionChannel::ECC_Vehicle);
+	collisionObjectQuery.AddObjectTypesToQuery(ECollisionChannel::ECC_Destructible);
+
+	FCollisionQueryParams collisionQuery;
+	collisionQuery.AddIgnoredActor(OwnChar);
+
+	GetWorld()->LineTraceSingleByObjectType(result, vStart, vEnd, collisionObjectQuery, collisionQuery);
+	DrawDebugLine(GetWorld(), vStart, vEnd, FColor::Yellow, false, 5.0f);
+}
+
+float AWeapon::GetFireStartLength()
+{
+	if (IsValid(OwnChar) == false)
+		return 0.0f;
+
+	USpringArmComponent* arm = Cast<USpringArmComponent>(OwnChar->GetComponentByClass(USpringArmComponent::StaticClass()));
+	if (IsValid(arm) == false)
+		return 0.0f;
+
+	return arm->TargetArmLength + 100;
 }
 
