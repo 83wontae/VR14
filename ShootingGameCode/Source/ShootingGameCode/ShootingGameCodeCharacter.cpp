@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Weapon.h"
+#include "ShootingPlayerState.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCodeCharacter
@@ -84,6 +85,20 @@ void AShootingGameCodeCharacter::Tick(float DeltaTime)
 	{
 		PlayerRotation = GetControlRotation();
 	}
+}
+
+float AShootingGameCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+		FString::Printf(TEXT("TakeDamage EventInstigator=%s"), *EventInstigator->GetName()));
+
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (IsValid(ps) == false)
+		return 0.0f;
+
+	ps->AddDamage(DamageAmount);
+
+	return DamageAmount;
 }
 
 void AShootingGameCodeCharacter::ReqReload_Implementation()

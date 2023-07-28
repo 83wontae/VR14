@@ -116,8 +116,20 @@ void AWeapon::ReqShoot_Implementation(FVector vStart, FVector vEnd)
 	FCollisionQueryParams collisionQuery;
 	collisionQuery.AddIgnoredActor(OwnChar);
 
-	GetWorld()->LineTraceSingleByObjectType(result, vStart, vEnd, collisionObjectQuery, collisionQuery);
+	bool isHit = GetWorld()->LineTraceSingleByObjectType(result, vStart, vEnd, collisionObjectQuery, collisionQuery);
 	DrawDebugLine(GetWorld(), vStart, vEnd, FColor::Yellow, false, 5.0f);
+
+	if (isHit == false)
+		return;
+
+	ACharacter* HitChar = Cast<ACharacter>(result.GetActor());
+	if (HitChar == nullptr)
+		return;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+		FString::Printf(TEXT("ApplyDamage HitChar=%s"), *HitChar->GetName()));
+	
+	UGameplayStatics::ApplyDamage(HitChar, 10, OwnChar->GetController(), this, UDamageType::StaticClass());
 }
 
 float AWeapon::GetFireStartLength()
