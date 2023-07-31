@@ -3,9 +3,54 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "WeaponInterface.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
+
+USTRUCT(BlueprintType)
+struct FST_Weapon : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	FST_Weapon()
+		: StaticMesh(nullptr)
+		, ShootMontage(nullptr)
+		, ReloadMontage(nullptr)
+		, SoundBase(nullptr)
+		, FireEffect(nullptr)
+		, MaxAmmo(30)
+		, Damage(10)
+		, WeaponClass(nullptr)
+	{}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMesh* StaticMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* ShootMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* ReloadMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* SoundBase;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystem* FireEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxAmmo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AWeapon> WeaponClass;
+};
+
+
 
 UCLASS()
 class SHOOTINGGAMECODE_API AWeapon : public AActor, public IWeaponInterface
@@ -67,6 +112,9 @@ public:
 	UFUNCTION()
 	void OnRep_Ammo();
 
+	UFUNCTION()
+	void OnRep_RowName();
+
 public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsCanShoot() const;
@@ -80,25 +128,22 @@ public:
 
 	void SetAmmo(int NewAmmo);
 
+	void SetWeaponData(FName name);
+
+	void SetWeaponRowName(FName name);
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* WeaponMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* ShootMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* ReloadMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UParticleSystem* ShootEffect;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USoundBase* ShootSound;
 
 	UPROPERTY(BlueprintReadWrite)
 	ACharacter* OwnChar;
 
 	UPROPERTY(ReplicatedUsing = OnRep_Ammo)
 	int Ammo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_RowName)
+	FName RowName;
+
+	FST_Weapon* weaponData;
 };
