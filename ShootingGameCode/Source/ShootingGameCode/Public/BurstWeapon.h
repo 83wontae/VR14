@@ -14,4 +14,12 @@ class SHOOTINGGAMECODE_API ABurstWeapon : public AWeapon
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void EventTrigger_Implementation(bool IsPress) override;
+
+	void LoopShootMontage();
+
+	FTimerHandle th_loopShoot;
+
+	int BurstCnt;
 };
