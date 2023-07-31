@@ -39,7 +39,7 @@ class AShootingGameCodeCharacter : public ACharacter
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* ShootAction;
+	class UInputAction* TriggerAction;
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -66,7 +66,8 @@ protected:
 	void Look(const FInputActionValue& Value);
 			
 	/** Called for looking input */
-	void Shoot(const FInputActionValue& Value);
+	void TriggerPress(const FInputActionValue& Value);
+	void TriggerRelease(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Reload(const FInputActionValue& Value);
@@ -91,10 +92,10 @@ protected:
 
 public:
 	UFUNCTION(Server, Reliable)
-	void ReqShoot();
+	void ReqTrigger(bool IsPress);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void ResShoot();
+	void ResTrigger(bool IsPress);
 
 	UFUNCTION(Server, Reliable)
 	void ReqReload();

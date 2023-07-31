@@ -25,6 +25,11 @@ public:
 
 	void OnUpdateMyHp_Implementation(float CurHp, float MaxHp);
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnUpdateMyAmmo(int Ammo);
+
+	void OnUpdateMyAmmo_Implementation(int Ammo);
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UUserWidget> HudWidgetClass;
