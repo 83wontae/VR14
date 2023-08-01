@@ -103,6 +103,13 @@ float AShootingGameCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 
 void AShootingGameCodeCharacter::ReqReload_Implementation()
 {
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (IsValid(ps) == false)
+		return;
+
+	if (ps->IsCanUseMag() == false)
+		return;
+
 	ResReload();
 }
 

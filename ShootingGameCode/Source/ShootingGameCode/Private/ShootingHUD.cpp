@@ -26,6 +26,8 @@ void AShootingHUD::BindMyPlayerState()
 		{
 			ps->Fuc_Dele_UpdateHp.AddDynamic(this, &AShootingHUD::OnUpdateMyHp);
 			OnUpdateMyHp(ps->CurHp, ps->MaxHp);
+
+			ps->Fuc_Dele_UpdateMag.AddDynamic(this, &AShootingHUD::OnUpdateMyMag);
 			return;
 		}
 	}
@@ -39,5 +41,9 @@ void AShootingHUD::OnUpdateMyHp_Implementation(float CurHp, float MaxHp)
 }
 
 void AShootingHUD::OnUpdateMyAmmo_Implementation(int Ammo)
+{
+}
+
+void AShootingHUD::OnUpdateMyMag_Implementation(int Mag)
 {
 }

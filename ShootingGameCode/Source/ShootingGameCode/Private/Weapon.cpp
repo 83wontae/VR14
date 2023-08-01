@@ -9,6 +9,7 @@
 #include "Net/UnrealNetwork.h"
 #include "ShootingHud.h"
 #include "ShootingGameInstance.h"
+#include "ShootingPlayerState.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -129,6 +130,16 @@ void AWeapon::IsCanPickUp_Implementation(bool& IsCanPickUp)
 
 void AWeapon::EventResetAmmo_Implementation()
 {
+	if (IsValid(OwnChar) == false)
+		return;
+
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(OwnChar->GetPlayerState());
+	if(IsValid(ps) == false)
+		return;
+
+	if (ps->UseMag() == false)
+		return;
+
 	SetAmmo(weaponData->MaxAmmo);
 }
 
@@ -238,7 +249,8 @@ void AWeapon::SetWeaponData(FName name)
 	weaponData = gameInst->GetWeaponRowData(name);
 
 	WeaponMesh->SetStaticMesh(weaponData->StaticMesh);
-	EventResetAmmo();
+
+	SetAmmo(weaponData->MaxAmmo);
 }
 
 void AWeapon::SetWeaponRowName(FName name)

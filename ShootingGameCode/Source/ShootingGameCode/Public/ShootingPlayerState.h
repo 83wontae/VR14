@@ -36,6 +36,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddMag();
 
+	UFUNCTION(BlueprintCallable)
+	bool UseMag();
+
+	UFUNCTION(BlueprintPure)
+	bool IsCanUseMag();
+
 public:
 	UPROPERTY(ReplicatedUsing = OnRep_CurHp)
 	float CurHp;
