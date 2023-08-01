@@ -177,6 +177,26 @@ void AShootingGameCodeCharacter::ResDrop_Implementation()
 	EquipWeapon = nullptr;
 }
 
+void AShootingGameCodeCharacter::EventGetItem_Implementation(EItemType itemType)
+{
+	switch (itemType)
+	{
+		case EItemType::IT_Heal:
+		{
+			break;
+		}
+		case EItemType::IT_Mag:
+		{
+			AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+			if (IsValid(ps))
+			{
+				ps->AddMag();
+			}
+			break;
+		}
+	}
+}
+
 void AShootingGameCodeCharacter::EquipTestWeapon(TSubclassOf<class AWeapon> WeaponClass)
 {
 	EquipWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, FVector(0, 0, 0), FRotator(0, 0, 0));
