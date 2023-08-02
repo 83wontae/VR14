@@ -54,6 +54,10 @@ class AShootingGameCodeCharacter : public ACharacter, public IItemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* DropAction;
 
+	/** Test Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* TestAction;
+
 public:
 	AShootingGameCodeCharacter();
 	
@@ -78,6 +82,9 @@ protected:
 
 	/** Called for looking input */
 	void Drop(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void Test(const FInputActionValue& Value);
 
 protected:
 	// APawn interface
@@ -129,6 +136,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AActor* FindNearestWeapon();
 
+	UFUNCTION(BlueprintCallable)
+	void DoRagdoll();
+
+	UFUNCTION(BlueprintCallable)
+	void DoGetUp();
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -151,5 +164,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	bool IsEquip();
+
+	bool IsRagdoll;
 };
 

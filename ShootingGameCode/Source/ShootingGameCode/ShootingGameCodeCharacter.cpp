@@ -52,6 +52,9 @@ AShootingGameCodeCharacter::AShootingGameCodeCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	GetMesh()->SetCollisionProfileName("Ragdoll");
+	IsRagdoll = false;
 }
 
 void AShootingGameCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -83,6 +86,11 @@ void AShootingGameCodeCharacter::Tick(float DeltaTime)
 	if (HasAuthority() == true)
 	{
 		PlayerRotation = GetControlRotation();
+	}
+
+	if (IsRagdoll)
+	{
+		SetActorLocation(GetMesh()->GetSocketLocation("spine_02") + FVector(0.0f, 0.0f, 50.0f));
 	}
 }
 
@@ -237,6 +245,33 @@ AActor* AShootingGameCodeCharacter::FindNearestWeapon()
 	return nearestWeapon;
 }
 
+void AShootingGameCodeCharacter::DoRagdoll()
+{
+	if (IsRagdoll)
+		return;
+
+	IsRagdoll = true;
+
+	GetMesh()->SetSimulatePhysics(true);
+}
+
+void AShootingGameCodeCharacter::DoGetUp()
+{
+	if (IsRagdoll == false)
+		return;
+
+	IsRagdoll = false;
+
+	GetMesh()->SetSimulatePhysics(false);
+
+	GetMesh()->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+	FVector vloc = { 0.0f, 0.0f, -89.0f };
+	FRotator rRot = { 0.0f, 270.0f, 0.0f };
+
+	GetMesh()->SetRelativeLocationAndRotation(vloc, rRot);
+}
+
 void AShootingGameCodeCharacter::DoPickUp(AActor* weapon)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("DoPickUp"));
@@ -313,6 +348,9 @@ void AShootingGameCodeCharacter::SetupPlayerInputComponent(class UInputComponent
 
 		//Drop
 		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::Drop);
+
+		//Drop
+		EnhancedInputComponent->BindAction(TestAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::Test);
 	}
 
 }
@@ -377,4 +415,16 @@ void AShootingGameCodeCharacter::PressF(const FInputActionValue& Value)
 void AShootingGameCodeCharacter::Drop(const FInputActionValue& Value)
 {
 	ReqDrop();
+}
+
+void AShootingGameCodeCharacter::Test(const FInputActionValue& Value)
+{
+	if (IsRagdoll)
+	{
+		DoGetUp();
+	}
+	else
+	{
+		DoRagdoll();
+	}
 }
