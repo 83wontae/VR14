@@ -142,6 +142,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DoGetUp();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnUpdateHp(float CurHp, float MaxHp);
+
+	void OnUpdateHp_Implementation(float CurHp, float MaxHp);
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -152,6 +157,10 @@ public:
 	void DoPickUp(AActor* weapon);
 
 	void DoDrop();
+
+	void BindPlayerState();
+
+	FTransform GetRandomReviveTransform();
 
 public:
 	UPROPERTY(Replicated)
@@ -166,5 +175,7 @@ public:
 	bool IsEquip();
 
 	bool IsRagdoll;
+
+	FTimerHandle th_BindPlayerState;
 };
 

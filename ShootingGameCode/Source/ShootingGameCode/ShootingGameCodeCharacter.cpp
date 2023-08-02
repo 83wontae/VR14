@@ -13,6 +13,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Weapon.h"
 #include "ShootingPlayerState.h"
+#include "GameFramework/PlayerStart.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCodeCharacter
@@ -77,6 +78,8 @@ void AShootingGameCodeCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	BindPlayerState();
 }
 
 void AShootingGameCodeCharacter::Tick(float DeltaTime)
@@ -88,9 +91,9 @@ void AShootingGameCodeCharacter::Tick(float DeltaTime)
 		PlayerRotation = GetControlRotation();
 	}
 
-	if (IsRagdoll)
+	if (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0) == this && IsRagdoll)
 	{
-		SetActorLocation(GetMesh()->GetSocketLocation("spine_02") + FVector(0.0f, 0.0f, 50.0f));
+		SetActorLocation(GetMesh()->GetSocketLocation("spine_02"), true);
 	}
 }
 
@@ -272,6 +275,18 @@ void AShootingGameCodeCharacter::DoGetUp()
 	GetMesh()->SetRelativeLocationAndRotation(vloc, rRot);
 }
 
+void AShootingGameCodeCharacter::OnUpdateHp_Implementation(float CurHp, float MaxHp)
+{
+	if (CurHp > 0)
+	{
+
+	}
+	else
+	{
+		DoRagdoll();
+	}
+}
+
 void AShootingGameCodeCharacter::DoPickUp(AActor* weapon)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("DoPickUp"));
@@ -300,6 +315,28 @@ void AShootingGameCodeCharacter::DoDrop()
 	InterfaceObj->Execute_EventDrop(EquipWeapon, this);
 
 	EquipWeapon = nullptr;
+}
+
+void AShootingGameCodeCharacter::BindPlayerState()
+{
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (IsValid(ps))
+	{
+		ps->Fuc_Dele_UpdateHp.AddDynamic(this, &AShootingGameCodeCharacter::OnUpdateHp);
+		return;
+	}
+
+	FTimerManager& timerManager = GetWorld()->GetTimerManager();
+	timerManager.SetTimer(th_BindPlayerState, this, &AShootingGameCodeCharacter::BindPlayerState, 0.1f, false);
+}
+
+FTransform AShootingGameCodeCharacter::GetRandomReviveTransform()
+{
+	TArray<AActor*> arrPS;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), arrPS);
+	AActor* randStart = arrPS[FMath::RandRange(0, arrPS.Num() - 1)];
+
+	return randStart->GetActorTransform();
 }
 
 FRotator AShootingGameCodeCharacter::GetPlayerRotation()
