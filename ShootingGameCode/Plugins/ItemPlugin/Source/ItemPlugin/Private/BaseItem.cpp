@@ -40,6 +40,9 @@ void ABaseItem::Tick(float DeltaTime)
 
 void ABaseItem::MeshBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (HasAuthority() == false)
+		return;
+
 	IItemInterface* InterfaceObj = Cast<IItemInterface>(OtherActor);
 
 	if (InterfaceObj == nullptr)

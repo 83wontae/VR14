@@ -107,8 +107,8 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ReqPressF();
 
-	UFUNCTION()
-	void OnRep_EquipWeapon();
+	UFUNCTION(NetMulticast, Reliable)
+	void ResPressF(AActor* weapon);
 
 	UFUNCTION(Server, Reliable)
 	void ReqDrop();
@@ -136,13 +136,17 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 public:
+	void DoPickUp(AActor* weapon);
+
+	void DoDrop();
+
+public:
 	UPROPERTY(Replicated)
 	FRotator PlayerRotation;
 
 	UFUNCTION(BlueprintPure)
 	FRotator GetPlayerRotation();
 
-	UPROPERTY(ReplicatedUsing = OnRep_EquipWeapon)
 	AActor* EquipWeapon;
 
 	UFUNCTION(BlueprintPure)

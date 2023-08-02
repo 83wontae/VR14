@@ -45,6 +45,7 @@ void AShootingPlayerState::OnRep_Mag()
 void AShootingPlayerState::AddDamage(float Damage)
 {
 	CurHp = CurHp - Damage;
+	CurHp = FMath::Clamp(CurHp, 0.0f, MaxHp);
 
 	OnRep_CurHp();
 }
@@ -73,4 +74,12 @@ bool AShootingPlayerState::IsCanUseMag()
 		return false;
 
 	return true;
+}
+
+void AShootingPlayerState::AddHeal(float Heal)
+{
+	CurHp = CurHp + Heal;
+	CurHp = FMath::Clamp(CurHp, 0.0f, MaxHp);
+
+	OnRep_CurHp();
 }

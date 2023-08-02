@@ -59,7 +59,6 @@ void AShootingGameCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProp
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AShootingGameCodeCharacter, PlayerRotation);
-	DOREPLIFETIME(AShootingGameCodeCharacter, EquipWeapon);
 }
 
 void AShootingGameCodeCharacter::BeginPlay()
@@ -146,25 +145,19 @@ void AShootingGameCodeCharacter::ReqPressF_Implementation()
 	if (IsValid(nearestWeapon) == false)
 		return;
 
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("FindNearestWeapon"));
+	nearestWeapon->SetOwner(GetController());
 
-	EquipWeapon = nearestWeapon;
-	EquipWeapon->SetOwner(GetController());
-
-	OnRep_EquipWeapon();
+	ResPressF(nearestWeapon);
 }
 
-void AShootingGameCodeCharacter::OnRep_EquipWeapon()
+void AShootingGameCodeCharacter::ResPressF_Implementation(AActor* weapon)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("OnRep_EquipWeapon"));
-	bUseControllerRotationYaw = IsValid(EquipWeapon);
+	if (IsValid(EquipWeapon))
+	{
+		DoDrop();
+	}
 
-	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
-
-	if (InterfaceObj == nullptr)
-		return;
-
-	InterfaceObj->Execute_EventPickUp(EquipWeapon, this);
+	DoPickUp(weapon);
 }
 
 void AShootingGameCodeCharacter::ReqDrop_Implementation()
@@ -174,14 +167,7 @@ void AShootingGameCodeCharacter::ReqDrop_Implementation()
 
 void AShootingGameCodeCharacter::ResDrop_Implementation()
 {
-	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
-
-	if (InterfaceObj == nullptr)
-		return;
-
-	InterfaceObj->Execute_EventDrop(EquipWeapon, this);
-
-	EquipWeapon = nullptr;
+	DoDrop();
 }
 
 void AShootingGameCodeCharacter::EventGetItem_Implementation(EItemType itemType)
@@ -190,6 +176,11 @@ void AShootingGameCodeCharacter::EventGetItem_Implementation(EItemType itemType)
 	{
 		case EItemType::IT_Heal:
 		{
+			AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+			if (IsValid(ps))
+			{
+				ps->AddHeal(100);
+			}
 			break;
 		}
 		case EItemType::IT_Mag:
@@ -244,6 +235,36 @@ AActor* AShootingGameCodeCharacter::FindNearestWeapon()
 	}
 
 	return nearestWeapon;
+}
+
+void AShootingGameCodeCharacter::DoPickUp(AActor* weapon)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("DoPickUp"));
+
+	EquipWeapon = weapon;
+
+	bUseControllerRotationYaw = true;
+
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(weapon);
+
+	if (InterfaceObj == nullptr)
+		return;
+
+	InterfaceObj->Execute_EventPickUp(weapon, this);
+}
+
+void AShootingGameCodeCharacter::DoDrop()
+{
+	bUseControllerRotationYaw = false;
+
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj == nullptr)
+		return;
+
+	InterfaceObj->Execute_EventDrop(EquipWeapon, this);
+
+	EquipWeapon = nullptr;
 }
 
 FRotator AShootingGameCodeCharacter::GetPlayerRotation()
@@ -357,7 +378,3 @@ void AShootingGameCodeCharacter::Drop(const FInputActionValue& Value)
 {
 	ReqDrop();
 }
-
-
-
-

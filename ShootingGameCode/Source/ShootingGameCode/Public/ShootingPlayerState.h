@@ -42,6 +42,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsCanUseMag();
 
+	UFUNCTION(BlueprintCallable)
+	void AddHeal(float Heal);
+
 public:
 	UPROPERTY(ReplicatedUsing = OnRep_CurHp)
 	float CurHp;
