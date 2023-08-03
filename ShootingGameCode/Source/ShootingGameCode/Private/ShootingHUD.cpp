@@ -9,6 +9,8 @@ void AShootingHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
+	check(HudWidgetClass);
+
 	HudWidget = CreateWidget<UUserWidget>(GetWorld(), HudWidgetClass);
 	HudWidget->AddToViewport();
 

@@ -123,12 +123,19 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void ResDrop();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void ResRevive(FTransform ReviveTrans);
+
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void EventGetItem(EItemType itemType);
 
 	void EventGetItem_Implementation(EItemType itemType) override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void EventUpdateNameTag();
+
+	void EventUpdateNameTag_Implementation();
 public:
 	UFUNCTION(BlueprintCallable)
 	void EquipTestWeapon(TSubclassOf<class AWeapon> WeaponClass);
@@ -160,7 +167,11 @@ public:
 
 	void BindPlayerState();
 
+	void DoRevive();
+
 	FTransform GetRandomReviveTransform();
+
+	void CreateNameTag();
 
 public:
 	UPROPERTY(Replicated)
@@ -177,5 +188,13 @@ public:
 	bool IsRagdoll;
 
 	FTimerHandle th_BindPlayerState;
+	FTimerHandle th_Revive;
+	FTimerHandle th_NameTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UCustomUserWidget> NameTagClass;
+
+	UPROPERTY(BlueprintReadWrite)
+	UCustomUserWidget* NameTagWidget;
 };
 

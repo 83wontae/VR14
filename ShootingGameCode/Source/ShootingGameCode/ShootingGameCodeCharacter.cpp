@@ -14,6 +14,8 @@
 #include "Weapon.h"
 #include "ShootingPlayerState.h"
 #include "GameFramework/PlayerStart.h"
+#include "Blueprint/UserWidget.h"
+#include "CustomUserWidget.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCodeCharacter
@@ -79,6 +81,7 @@ void AShootingGameCodeCharacter::BeginPlay()
 		}
 	}
 
+	CreateNameTag();
 	BindPlayerState();
 }
 
@@ -181,6 +184,19 @@ void AShootingGameCodeCharacter::ResDrop_Implementation()
 	DoDrop();
 }
 
+void AShootingGameCodeCharacter::ResRevive_Implementation(FTransform ReviveTrans)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+	//	FString::Printf(TEXT("ResRevive")));
+
+	DoGetUp();
+
+	FVector Loc = ReviveTrans.GetLocation();
+	FRotator Rot = ReviveTrans.Rotator();
+
+	SetActorLocationAndRotation(Loc, Rot);
+}
+
 void AShootingGameCodeCharacter::EventGetItem_Implementation(EItemType itemType)
 {
 	switch (itemType)
@@ -204,6 +220,10 @@ void AShootingGameCodeCharacter::EventGetItem_Implementation(EItemType itemType)
 			break;
 		}
 	}
+}
+
+void AShootingGameCodeCharacter::EventUpdateNameTag_Implementation()
+{
 }
 
 void AShootingGameCodeCharacter::EquipTestWeapon(TSubclassOf<class AWeapon> WeaponClass)
@@ -284,6 +304,12 @@ void AShootingGameCodeCharacter::OnUpdateHp_Implementation(float CurHp, float Ma
 	else
 	{
 		DoRagdoll();
+
+		if (HasAuthority())
+		{
+			FTimerManager& timerManager = GetWorld()->GetTimerManager();
+			timerManager.SetTimer(th_Revive, this, &AShootingGameCodeCharacter::DoRevive, 3.0f, false);
+		}
 	}
 }
 
@@ -323,11 +349,23 @@ void AShootingGameCodeCharacter::BindPlayerState()
 	if (IsValid(ps))
 	{
 		ps->Fuc_Dele_UpdateHp.AddDynamic(this, &AShootingGameCodeCharacter::OnUpdateHp);
+		OnUpdateHp(ps->CurHp, ps->MaxHp);
 		return;
 	}
 
 	FTimerManager& timerManager = GetWorld()->GetTimerManager();
 	timerManager.SetTimer(th_BindPlayerState, this, &AShootingGameCodeCharacter::BindPlayerState, 0.1f, false);
+}
+
+void AShootingGameCodeCharacter::DoRevive()
+{
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (IsValid(ps) == false)
+		return;
+
+	ps->AddHeal(100.0f);
+
+	ResRevive(GetRandomReviveTransform());
 }
 
 FTransform AShootingGameCodeCharacter::GetRandomReviveTransform()
@@ -337,6 +375,18 @@ FTransform AShootingGameCodeCharacter::GetRandomReviveTransform()
 	AActor* randStart = arrPS[FMath::RandRange(0, arrPS.Num() - 1)];
 
 	return randStart->GetActorTransform();
+}
+
+void AShootingGameCodeCharacter::CreateNameTag()
+{
+	check(NameTagClass);
+
+	NameTagWidget = CreateWidget<UCustomUserWidget>(GetWorld(), NameTagClass);
+	NameTagWidget->AddToViewport();
+	NameTagWidget->OwnChar = this;
+
+	FTimerManager& timerManager = GetWorld()->GetTimerManager();
+	timerManager.SetTimer(th_NameTag, this, &AShootingGameCodeCharacter::EventUpdateNameTag, 0.01f, true);
 }
 
 FRotator AShootingGameCodeCharacter::GetPlayerRotation()
@@ -394,6 +444,9 @@ void AShootingGameCodeCharacter::SetupPlayerInputComponent(class UInputComponent
 
 void AShootingGameCodeCharacter::Move(const FInputActionValue& Value)
 {
+	if (IsRagdoll == true)
+		return;
+
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
