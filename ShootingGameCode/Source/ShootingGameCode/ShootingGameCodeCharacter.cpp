@@ -16,6 +16,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "Blueprint/UserWidget.h"
 #include "CustomUserWidget.h"
+#include "Grenade.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCodeCharacter
@@ -195,6 +196,24 @@ void AShootingGameCodeCharacter::ResRevive_Implementation(FTransform ReviveTrans
 	FRotator Rot = ReviveTrans.Rotator();
 
 	SetActorLocationAndRotation(Loc, Rot);
+}
+
+void AShootingGameCodeCharacter::ReqGrenade_Implementation()
+{
+	ResGrenade();
+}
+
+void AShootingGameCodeCharacter::ResGrenade_Implementation()
+{
+	PlayAnimMontage(GrenadeMontage);
+}
+
+void AShootingGameCodeCharacter::ReqSpawnGrenade_Implementation(FVector Start, FVector Impluse)
+{
+	AGrenade* grenade = GetWorld()->SpawnActor<AGrenade>(GrenadeClass, Start, FRotator(0.0f, 0.0f, 0.0f));
+
+	grenade->instigater = GetController();
+	grenade->StaticMesh->AddImpulse(Impluse);
 }
 
 void AShootingGameCodeCharacter::EventGetItem_Implementation(EItemType itemType)
@@ -389,6 +408,54 @@ void AShootingGameCodeCharacter::CreateNameTag()
 	timerManager.SetTimer(th_NameTag, this, &AShootingGameCodeCharacter::EventUpdateNameTag, 0.01f, true);
 }
 
+void AShootingGameCodeCharacter::SpawnGrenade()
+{
+	if (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0) != this)
+		return;
+
+	FVector StartPos;
+	FVector Impluse;
+	FVector CameraStart = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	FVector CameraForward = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetActorForwardVector();
+
+	StartPos = CameraStart + (CameraForward * 400.0f);
+	FVector addUp = CameraForward + FVector(0.0f, 0.0f, 0.2f);
+	Impluse = addUp.GetSafeNormal() + CameraForward * 550.0f;
+
+	ReqSpawnGrenade(StartPos, Impluse);
+}
+
+void AShootingGameCodeCharacter::ShowGrenadeGuideLine()
+{
+	FVector StartPos;
+	FVector Impluse;
+	FVector CameraStart = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	FVector CameraForward = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetActorForwardVector();
+
+	StartPos = CameraStart + (CameraForward * 400.0f);
+	FVector addUp = CameraForward + FVector(0.0f, 0.0f, 0.2f);
+	Impluse = addUp.GetSafeNormal() + CameraForward * 1000.0f;
+
+	FPredictProjectilePathParams PathParams;
+	FPredictProjectilePathResult PathResult;
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjArr;
+	ObjArr.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
+	ObjArr.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+	ObjArr.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	ObjArr.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody));
+	ObjArr.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Vehicle));
+	ObjArr.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Destructible));
+
+	PathParams.StartLocation = StartPos;
+	PathParams.LaunchVelocity = Impluse;
+	PathParams.ProjectileRadius = 16;
+	PathParams.ObjectTypes = ObjArr;
+	PathParams.DrawDebugType = EDrawDebugTrace::ForOneFrame;
+
+	bool bHit = UGameplayStatics::PredictProjectilePath(GetWorld(), PathParams, PathResult);
+}
+
 FRotator AShootingGameCodeCharacter::GetPlayerRotation()
 {
 	ACharacter* pChar0 = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -436,7 +503,11 @@ void AShootingGameCodeCharacter::SetupPlayerInputComponent(class UInputComponent
 		//Drop
 		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::Drop);
 
-		//Drop
+		//Grenade
+		EnhancedInputComponent->BindAction(GrenadeAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::GrenadePress);
+		EnhancedInputComponent->BindAction(GrenadeAction, ETriggerEvent::Completed, this, &AShootingGameCodeCharacter::GrenadeRelease);
+
+		//Test
 		EnhancedInputComponent->BindAction(TestAction, ETriggerEvent::Started, this, &AShootingGameCodeCharacter::Test);
 	}
 
@@ -507,14 +578,32 @@ void AShootingGameCodeCharacter::Drop(const FInputActionValue& Value)
 	ReqDrop();
 }
 
+void AShootingGameCodeCharacter::GrenadePress(const FInputActionValue& Value)
+{
+	FTimerManager& timerManager = GetWorld()->GetTimerManager();
+	timerManager.SetTimer(th_Grenade, this, &AShootingGameCodeCharacter::ShowGrenadeGuideLine, 0.01f, true);
+}
+
+void AShootingGameCodeCharacter::GrenadeRelease(const FInputActionValue& Value)
+{
+	FTimerManager& timerManager = GetWorld()->GetTimerManager();
+	timerManager.ClearTimer(th_Grenade);
+
+	ReqGrenade();
+}
+
 void AShootingGameCodeCharacter::Test(const FInputActionValue& Value)
 {
-	if (IsRagdoll)
+	FTimerManager& timermanager = GetWorld()->GetTimerManager();
+
+	if (timermanager.TimerExists(th_Grenade) == false)
 	{
-		DoGetUp();
+		timermanager.SetTimer(th_Grenade, this, &AShootingGameCodeCharacter::ShowGrenadeGuideLine, 0.01, true);
+		//DoGetUp();
 	}
 	else
 	{
-		DoRagdoll();
+		timermanager.ClearTimer(th_Grenade);
+		//DoRagdoll();
 	}
 }

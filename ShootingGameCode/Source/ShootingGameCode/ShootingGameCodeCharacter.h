@@ -54,6 +54,10 @@ class AShootingGameCodeCharacter : public ACharacter, public IItemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* DropAction;
 
+	/** Drop Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* GrenadeAction;
+
 	/** Test Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* TestAction;
@@ -82,6 +86,10 @@ protected:
 
 	/** Called for looking input */
 	void Drop(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void GrenadePress(const FInputActionValue& Value);
+	void GrenadeRelease(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Test(const FInputActionValue& Value);
@@ -125,6 +133,15 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void ResRevive(FTransform ReviveTrans);
+
+	UFUNCTION(Server, Reliable)
+	void ReqGrenade();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ResGrenade();
+
+	UFUNCTION(Server, Reliable)
+	void ReqSpawnGrenade(FVector Start, FVector Impluse);
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
@@ -173,6 +190,10 @@ public:
 
 	void CreateNameTag();
 
+	void SpawnGrenade();
+
+	void ShowGrenadeGuideLine();
+
 public:
 	UPROPERTY(Replicated)
 	FRotator PlayerRotation;
@@ -190,11 +211,18 @@ public:
 	FTimerHandle th_BindPlayerState;
 	FTimerHandle th_Revive;
 	FTimerHandle th_NameTag;
+	FTimerHandle th_Grenade;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UCustomUserWidget> NameTagClass;
 
 	UPROPERTY(BlueprintReadWrite)
 	UCustomUserWidget* NameTagWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* GrenadeMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AGrenade> GrenadeClass;
 };
 
