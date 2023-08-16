@@ -197,6 +197,9 @@ void UShootingGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 			// If we have found at least 1 session, we just going to debug them. You could add them to a list of UMG Widgets, like it is done in the BP version!
 			if (SessionSearch->SearchResults.Num() > 0)
 			{
+				TArray<FBlueprintSessionResult> bpSessionResults;
+				bpSessionResults.SetNum(SessionSearch->SearchResults.Num());
+
 				// "SessionSearch->SearchResults" is an Array that contains all the information. You can access the Session in this and get a lot of information.
 				// This can be customized later on with your own classes to add more information that can be set and displayed
 				for (int32 SearchIdx = 0; SearchIdx < SessionSearch->SearchResults.Num(); SearchIdx++)
@@ -204,7 +207,14 @@ void UShootingGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 					// OwningUserName is just the SessionName for now. I guess you can create your own Host Settings class and GameSession Class and add a proper GameServer Name here.
 					// This is something you can't do in Blueprint for example!
 					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session Number: %d | Sessionname: %s "), SearchIdx + 1, *(SessionSearch->SearchResults[SearchIdx].Session.OwningUserName)));
+
+					bpSessionResults[SearchIdx].OnlineResult = SessionSearch->SearchResults[SearchIdx];
 				}
+
+				OnUpdateSessionResult(bpSessionResults);
+
+				if (Fuc_Dele_SessionResult.IsBound())
+					Fuc_Dele_SessionResult.Broadcast(true, bpSessionResults);
 			}
 		}
 	}
@@ -264,9 +274,18 @@ void UShootingGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSess
 
 			if (PlayerController && Sessions->GetResolvedConnectString(SessionName, TravelURL))
 			{
+				GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, FString::Printf(TEXT("TravelURL = %s"), *TravelURL));
+
+				FString strIPAddress, strPort;
+				int32 Port = 7777;
+				//172.16.2.186:0
+				TravelURL.Split(TEXT(":"), &strIPAddress, &strPort, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+
+				FString NewTravelURL = FString::Printf(TEXT("%s:%d"), *strIPAddress, Port);
+
 				// Finally call the ClienTravel. If you want, you could print the TravelURL to see
 				// how it really looks like
-				PlayerController->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
+				PlayerController->ClientTravel(NewTravelURL, ETravelType::TRAVEL_Absolute);
 			}
 		}
 	}
@@ -297,7 +316,7 @@ void UShootingGameInstance::OnDestroySessionComplete(FName SessionName, bool bWa
 	}
 }
 
-void UShootingGameInstance::StartOnlineGame()
+void UShootingGameInstance::StartOnlineGame(bool bIsLAN, int MaxNumPlayers)
 {
 	// Creating a local player where we can get the UserID from
 	ULocalPlayer* const Player = GetFirstGamePlayer();
@@ -317,7 +336,7 @@ void UShootingGameInstance::StartOnlineGame()
 		return;
 
 	// Call our custom HostSession function. GameSessionName is a GameInstance variable
-	HostSession(UniqueNetId, GameSessionName, true, true, 4);
+	HostSession(UniqueNetId, GameSessionName, bIsLAN, true, MaxNumPlayers);
 }
 
 void UShootingGameInstance::FindOnlineGames()
@@ -396,4 +415,15 @@ void UShootingGameInstance::DestroySessionAndLeaveGame()
 			Sessions->DestroySession(GameSessionName);
 		}
 	}
+}
+
+void UShootingGameInstance::Shutdown()
+{
+	DestroySessionAndLeaveGame();
+
+	Super::Shutdown();
+}
+
+void UShootingGameInstance::OnUpdateSessionResult_Implementation(const TArray<FBlueprintSessionResult>& SessionResults)
+{
 }

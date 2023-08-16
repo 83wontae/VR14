@@ -3,10 +3,14 @@
 #pragma once
 
 #include "ShootingGameCode.h"
+#include "FindSessionsCallbackProxy.h"
 #include "Engine/DataTable.h"
 #include "Weapon.h"
 #include "Engine/GameInstance.h"
 #include "ShootingGameInstance.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDele_SessionResult, 
+	bool, IsFind, const TArray<FBlueprintSessionResult>&, SessionResult);
 
 /**
  * 
@@ -149,7 +153,7 @@ public:
 	//--------------------------------------------------------------[ Start - Session Test Code ]------------------------------------------------------------------//
 
 	UFUNCTION(BlueprintCallable, Category = "Network|Test")
-	void StartOnlineGame();
+	void StartOnlineGame(bool bIsLAN, int MaxNumPlayers);
 
 	UFUNCTION(BlueprintCallable, Category = "Network|Test")
 	void FindOnlineGames();
@@ -161,4 +165,16 @@ public:
 	void DestroySessionAndLeaveGame();
 
 	//--------------------------------------------------------------[ End - Session Test Code ]------------------------------------------------------------------//
+
+	/** virtual function to allow custom GameInstances an opportunity to do cleanup when shutting down */
+	virtual void Shutdown() override;
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnUpdateSessionResult(const TArray<FBlueprintSessionResult>& SessionResults);
+
+	void OnUpdateSessionResult_Implementation(const TArray<FBlueprintSessionResult>& SessionResults);
+
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
+	FDele_SessionResult Fuc_Dele_SessionResult;
 };
