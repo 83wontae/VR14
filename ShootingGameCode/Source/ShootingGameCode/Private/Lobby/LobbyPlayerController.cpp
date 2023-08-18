@@ -13,6 +13,9 @@ void ALobbyPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 	
+	GEngine->AddOnScreenDebugMessage(-1, 60.0f, FColor::Yellow,
+		TEXT("(Server)OnPossess"));
+
 	ResClientPossess();
 }
 
@@ -23,6 +26,12 @@ void ALobbyPlayerController::ResClientPossess_Implementation()
 		return;
 
 	FString Name = GameInst->GetUserName();
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 60.0f, FColor::Yellow,
+		FString::Printf(TEXT("(Client)ResClientPossess Name=%s"), *Name));
+
+	ReqChangeUserName(Name);
 }
 
 void ALobbyPlayerController::ReqChangeUserName_Implementation(const FString& NewName)
@@ -30,6 +39,9 @@ void ALobbyPlayerController::ReqChangeUserName_Implementation(const FString& New
 	ALobbyPlayerState* ps = Cast<ALobbyPlayerState>(PlayerState);
 	if (ps == nullptr)
 		return;
+
+	GEngine->AddOnScreenDebugMessage(-1, 60.0f, FColor::Yellow,
+		FString::Printf(TEXT("(Server)ReqChangeUserName Name=%s"), *NewName));
 
 	ps->SetUserName(NewName);
 }

@@ -14,4 +14,11 @@ class SHOOTINGGAMECODE_API ALobbyHUD : public AHUD
 {
 	GENERATED_BODY()
 	
+public:
+	void BindPlayerState(class ALobbyPlayerState* PlayerState);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnUpdateUserName(const FString& userName);
+
+	void OnUpdateUserName_Implementation(const FString& userName);
 };
