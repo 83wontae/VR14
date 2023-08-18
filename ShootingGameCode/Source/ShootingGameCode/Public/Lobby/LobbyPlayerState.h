@@ -28,6 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetUserName(const FString& NewName);
 
+	UFUNCTION(BlueprintPure)
+	FString GetUserName() { return UserName; };
+
 	void UpdateBind();
 
 public:
