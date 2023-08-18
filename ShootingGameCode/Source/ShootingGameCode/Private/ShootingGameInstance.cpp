@@ -316,7 +316,7 @@ void UShootingGameInstance::OnDestroySessionComplete(FName SessionName, bool bWa
 	}
 }
 
-void UShootingGameInstance::StartOnlineGame(bool bIsLAN, int MaxNumPlayers)
+void UShootingGameInstance::StartOnlineGame(bool bIsLAN, int MaxNumPlayers, FString Name)
 {
 	// Creating a local player where we can get the UserID from
 	ULocalPlayer* const Player = GetFirstGamePlayer();
@@ -334,6 +334,8 @@ void UShootingGameInstance::StartOnlineGame(bool bIsLAN, int MaxNumPlayers)
 	const FUniqueNetIdPtr UniqueNetId = IdentityInterface->GetUniquePlayerId(Player->GetControllerId());
 	if (UniqueNetId.IsValid() == false)
 		return;
+
+	SetUserName(Name);
 
 	// Call our custom HostSession function. GameSessionName is a GameInstance variable
 	HostSession(UniqueNetId, GameSessionName, bIsLAN, true, MaxNumPlayers);
@@ -360,8 +362,11 @@ void UShootingGameInstance::FindOnlineGames()
 	FindSessions(UniqueNetId, true, true);
 }
 
-void UShootingGameInstance::JoinOnlineGame()
+void UShootingGameInstance::JoinOnlineGame(FBlueprintSessionResult SessionResult, FString Name)
 {
+	if (SessionResult.OnlineResult.IsValid() == false)
+		return;
+
 	ULocalPlayer* const Player = GetFirstGamePlayer();
 	if (Player == nullptr)
 		return;
@@ -378,27 +383,9 @@ void UShootingGameInstance::JoinOnlineGame()
 	if (UniqueNetId.IsValid() == false)
 		return;
 
-	// Just a SearchResult where we can save the one we want to use, for the case we find more than one!
-	FOnlineSessionSearchResult SearchResult;
+	SetUserName(Name);
 
-	// If the Array is not empty, we can go through it
-	if (SessionSearch->SearchResults.Num() > 0)
-	{
-		for (int32 i = 0; i < SessionSearch->SearchResults.Num(); i++)
-		{
-			// To avoid something crazy, we filter sessions from ourself
-			if (SessionSearch->SearchResults[i].Session.OwningUserId != UniqueNetId)
-			{
-				SearchResult = SessionSearch->SearchResults[i];
-
-				// Once we found sounce a Session that is not ours, just join it. Instead of using a for loop, you could
-				// use a widget where you click on and have a reference for the GameSession it represents which you can use
-				// here
-				JoinSession(UniqueNetId, GameSessionName, SearchResult);
-				break;
-			}
-		}
-	}
+	JoinSession(UniqueNetId, GameSessionName, SessionResult.OnlineResult);
 }
 
 void UShootingGameInstance::DestroySessionAndLeaveGame()

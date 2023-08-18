@@ -153,13 +153,13 @@ public:
 	//--------------------------------------------------------------[ Start - Session Test Code ]------------------------------------------------------------------//
 
 	UFUNCTION(BlueprintCallable, Category = "Network|Test")
-	void StartOnlineGame(bool bIsLAN, int MaxNumPlayers);
+	void StartOnlineGame(bool bIsLAN, int MaxNumPlayers, FString Name);
 
 	UFUNCTION(BlueprintCallable, Category = "Network|Test")
 	void FindOnlineGames();
 
 	UFUNCTION(BlueprintCallable, Category = "Network|Test")
-	void JoinOnlineGame();
+	void JoinOnlineGame(FBlueprintSessionResult SessionResult, FString Name);
 
 	UFUNCTION(BlueprintCallable, Category = "Network|Test")
 	void DestroySessionAndLeaveGame();
@@ -177,4 +177,13 @@ public:
 
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
 	FDele_SessionResult Fuc_Dele_SessionResult;
+
+public:
+	FString UserName;
+
+	UFUNCTION(BlueprintCallable)
+	void SetUserName(FString name) { UserName = name; };
+
+	UFUNCTION(BlueprintPure)
+	FString GetUserName() { return UserName; };
 };
