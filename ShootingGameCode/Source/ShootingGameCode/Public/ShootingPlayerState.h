@@ -8,6 +8,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDele_UpdateHp_TwoParams, float, CurHp, float, MaxHp);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDele_UpdateMag_OneParam, int, Mag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDele_Shooting_UserName, const FString&, UserName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDele_UpdateKillDeath_TwoParams, int, Kill, int, Death);
 /**
  * 
  */
@@ -20,6 +22,9 @@ public:
 	AShootingPlayerState();
 
 public:
+	virtual void BeginPlay() override;
+
+public:
 	UFUNCTION()
 	void OnRep_CurHp();
 
@@ -28,6 +33,9 @@ public:
 
 	UFUNCTION()
 	void OnRep_Mag();
+
+	UFUNCTION()
+	void OnRep_Kill();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -45,6 +53,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddHeal(float Heal);
 
+	UFUNCTION(BlueprintCallable)
+	void AddKill();
+
 public:
 	UPROPERTY(ReplicatedUsing = OnRep_CurHp)
 	float CurHp;
@@ -55,9 +66,40 @@ public:
 	UPROPERTY(ReplicatedUsing = OnRep_Mag)
 	int Mag;
 
+	UFUNCTION(BlueprintPure)
+	int GetKill() { return Kill; };
+
+	UPROPERTY(ReplicatedUsing = OnRep_Kill)
+	int Kill;
+
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
 	FDele_UpdateHp_TwoParams Fuc_Dele_UpdateHp;
 
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
 	FDele_UpdateMag_OneParam Fuc_Dele_UpdateMag;
+
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
+	FDele_UpdateKillDeath_TwoParams Fuc_Dele_UpdateKillDeath;
+
+public:
+	UFUNCTION()
+	void OnRep_UserName();
+
+	UFUNCTION(BlueprintCallable)
+	void SetUserName(const FString& NewName);
+
+	UFUNCTION(BlueprintPure)
+	FString GetUserName() { return UserName; };
+
+	void UpdateBind();
+
+public:
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
+	FDele_Shooting_UserName Func_Dele_UpdateUserName;
+
+private:
+	UPROPERTY(ReplicatedUsing = OnRep_UserName)
+	FString UserName;
+
+	FTimerHandle th_UpdateBind;
 };

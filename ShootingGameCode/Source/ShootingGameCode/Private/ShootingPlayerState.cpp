@@ -3,12 +3,20 @@
 
 #include "ShootingPlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "ShootingHUD.h"
 
 AShootingPlayerState::AShootingPlayerState()
 {
 	CurHp = 100;
 	MaxHp = 100;
 	Mag = 0;
+}
+
+void AShootingPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UpdateBind();
 }
 
 void AShootingPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -18,6 +26,8 @@ void AShootingPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(AShootingPlayerState, CurHp);
 	DOREPLIFETIME(AShootingPlayerState, MaxHp);
 	DOREPLIFETIME(AShootingPlayerState, Mag);
+	DOREPLIFETIME(AShootingPlayerState, UserName);
+	DOREPLIFETIME(AShootingPlayerState, Kill);
 }
 
 void AShootingPlayerState::OnRep_CurHp()
@@ -40,6 +50,12 @@ void AShootingPlayerState::OnRep_Mag()
 
 	if (Fuc_Dele_UpdateMag.IsBound())
 		Fuc_Dele_UpdateMag.Broadcast(Mag);
+}
+
+void AShootingPlayerState::OnRep_Kill()
+{
+	if (Fuc_Dele_UpdateKillDeath.IsBound())
+		Fuc_Dele_UpdateKillDeath.Broadcast(Kill, 0);
 }
 
 void AShootingPlayerState::AddDamage(float Damage)
@@ -82,4 +98,44 @@ void AShootingPlayerState::AddHeal(float Heal)
 	CurHp = FMath::Clamp(CurHp, 0.0f, MaxHp);
 
 	OnRep_CurHp();
+}
+
+void AShootingPlayerState::AddKill()
+{
+	Kill = Kill + 1;
+
+	OnRep_Kill();
+}
+
+void AShootingPlayerState::OnRep_UserName()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 60.0f, FColor::Yellow,
+		FString::Printf(TEXT("(Client)OnRep_UserName UserName=%s"), *UserName));
+
+	if (Func_Dele_UpdateUserName.IsBound())
+		Func_Dele_UpdateUserName.Broadcast(UserName);
+}
+
+void AShootingPlayerState::SetUserName(const FString& NewName)
+{
+	UserName = NewName;
+
+	OnRep_UserName();
+}
+
+void AShootingPlayerState::UpdateBind()
+{
+	APlayerController* player0 = GetWorld()->GetFirstPlayerController();
+	if (player0)
+	{
+		AShootingHUD* pHud = Cast<AShootingHUD>(player0->GetHUD());
+		if (pHud)
+		{
+			pHud->BindPlayerState(this);
+			return;
+		}
+	}
+
+	FTimerManager& TimerMgr = GetWorldTimerManager();
+	TimerMgr.SetTimer(th_UpdateBind, this, &AShootingPlayerState::UpdateBind, 0.1f, false);
 }
