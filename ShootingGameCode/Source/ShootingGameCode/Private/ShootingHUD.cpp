@@ -57,7 +57,7 @@ void AShootingHUD::BindPlayerState(AShootingPlayerState* PlayerState)
 		OnUpdateUserName(PlayerState->GetUserName());
 
 		PlayerState->Fuc_Dele_UpdateKillDeath.AddDynamic(this, &AShootingHUD::OnUpdateKillDeath);
-		OnUpdateKillDeath(PlayerState->GetKill(), 0);
+		OnUpdateKillDeath(PlayerState->GetKill(), PlayerState->GetDeath());
 	}
 }
 

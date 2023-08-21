@@ -115,7 +115,16 @@ float AShootingGameCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 	if (IsValid(ps) == false)
 		return 0.0f;
 
-	ps->AddDamage(DamageAmount);
+	if (ps->AddDamage(DamageAmount) == false)
+		return DamageAmount;
+
+	ps->AddDeath();
+
+	AShootingPlayerState* pKillerPS = Cast<AShootingPlayerState>(EventInstigator->PlayerState);
+	if(IsValid(pKillerPS) == false)
+		return DamageAmount;
+
+	pKillerPS->AddKill();
 
 	return DamageAmount;
 }
@@ -235,7 +244,7 @@ void AShootingGameCodeCharacter::ReqAddKill_Implementation()
 	if (IsValid(pPlayerState) == false)
 		return;
 
-	pPlayerState->AddKill();
+	pPlayerState->AddDeath();
 }
 
 void AShootingGameCodeCharacter::EventGetItem_Implementation(EItemType itemType)

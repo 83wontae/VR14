@@ -37,9 +37,12 @@ public:
 	UFUNCTION()
 	void OnRep_Kill();
 
+	UFUNCTION()
+	void OnRep_Death();
+
 public:
 	UFUNCTION(BlueprintCallable)
-	void AddDamage(float Damage);
+	bool AddDamage(float Damage);
 
 	UFUNCTION(BlueprintCallable)
 	void AddMag();
@@ -56,6 +59,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddKill();
 
+	UFUNCTION(BlueprintCallable)
+	void AddDeath();
+
 public:
 	UPROPERTY(ReplicatedUsing = OnRep_CurHp)
 	float CurHp;
@@ -71,6 +77,12 @@ public:
 
 	UPROPERTY(ReplicatedUsing = OnRep_Kill)
 	int Kill;
+
+	UFUNCTION(BlueprintPure)
+	int GetDeath() { return Death; };
+
+	UPROPERTY(ReplicatedUsing = OnRep_Death)
+	int Death;
 
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
 	FDele_UpdateHp_TwoParams Fuc_Dele_UpdateHp;
