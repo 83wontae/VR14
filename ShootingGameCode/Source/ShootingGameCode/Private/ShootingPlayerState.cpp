@@ -9,6 +9,8 @@ AShootingPlayerState::AShootingPlayerState()
 {
 	CurHp = 100;
 	MaxHp = 100;
+	CurSh = 100;
+	MaxSh = 100;
 	Mag = 0;
 }
 
@@ -25,6 +27,8 @@ void AShootingPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
 	DOREPLIFETIME(AShootingPlayerState, CurHp);
 	DOREPLIFETIME(AShootingPlayerState, MaxHp);
+	DOREPLIFETIME(AShootingPlayerState, CurSh);
+	DOREPLIFETIME(AShootingPlayerState, MaxSh);
 	DOREPLIFETIME(AShootingPlayerState, Mag);
 	DOREPLIFETIME(AShootingPlayerState, UserName);
 	DOREPLIFETIME(AShootingPlayerState, Kill);
@@ -41,6 +45,19 @@ void AShootingPlayerState::OnRep_CurHp()
 }
 
 void AShootingPlayerState::OnRep_MaxHp()
+{
+}
+
+void AShootingPlayerState::OnRep_CurSh()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+		FString::Printf(TEXT("OnRep_CurSh=%f"), CurSh));
+
+	if (Fuc_Dele_UpdateSh.IsBound())
+		Fuc_Dele_UpdateSh.Broadcast(CurSh, MaxSh);
+}
+
+void AShootingPlayerState::OnRep_MaxSh()
 {
 }
 
@@ -67,12 +84,19 @@ void AShootingPlayerState::OnRep_Death()
 
 bool AShootingPlayerState::AddDamage(float Damage)
 {
+	float leftDamage = AddDamageSh(Damage);
+
+	if (leftDamage <= 0)
+	{
+		return false;
+	}
+
 	if (CurHp <= 0)
 	{
 		return false;
 	}
 
-	CurHp = CurHp - Damage;
+	CurHp = CurHp - leftDamage;
 	CurHp = FMath::Clamp(CurHp, 0.0f, MaxHp);
 
 	OnRep_CurHp();
@@ -86,6 +110,27 @@ bool AShootingPlayerState::AddDamage(float Damage)
 	return false;
 	*/
 	return (CurHp <= 0) ? true : false;
+}
+
+float AShootingPlayerState::AddDamageSh(float Damage)
+{
+	if (CurSh <= 0)
+	{
+		return Damage;
+	}
+
+	float TempSh = CurSh - Damage;
+	
+	if (TempSh > 0)
+	{
+		CurSh = TempSh;
+		OnRep_CurSh();
+		return 0;
+	}
+
+	CurSh = 0;
+	OnRep_CurSh();
+	return FMath::Abs(TempSh);
 }
 
 void AShootingPlayerState::AddMag()
@@ -120,6 +165,14 @@ void AShootingPlayerState::AddHeal(float Heal)
 	CurHp = FMath::Clamp(CurHp, 0.0f, MaxHp);
 
 	OnRep_CurHp();
+}
+
+void AShootingPlayerState::AddHealSh(float Heal)
+{
+	CurSh = CurSh + Heal;
+	CurSh = FMath::Clamp(CurSh, 0.0f, MaxSh);
+
+	OnRep_CurSh();
 }
 
 void AShootingPlayerState::AddKill()

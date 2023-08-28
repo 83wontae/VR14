@@ -37,6 +37,9 @@ void AShootingHUD::BindMyPlayerState()
 			ps->Fuc_Dele_UpdateHp.AddDynamic(this, &AShootingHUD::OnUpdateMyHp);
 			OnUpdateMyHp(ps->CurHp, ps->MaxHp);
 
+			ps->Fuc_Dele_UpdateSh.AddDynamic(this, &AShootingHUD::OnUpdateMySh);
+			OnUpdateMySh(ps->CurSh, ps->MaxSh);
+
 			ps->Fuc_Dele_UpdateMag.AddDynamic(this, &AShootingHUD::OnUpdateMyMag);
 			return;
 		}
@@ -62,6 +65,10 @@ void AShootingHUD::BindPlayerState(AShootingPlayerState* PlayerState)
 }
 
 void AShootingHUD::OnUpdateMyHp_Implementation(float CurHp, float MaxHp)
+{
+}
+
+void AShootingHUD::OnUpdateMySh_Implementation(float CurSh, float MaxSh)
 {
 }
 

@@ -7,6 +7,7 @@
 #include "ShootingPlayerState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDele_UpdateHp_TwoParams, float, CurHp, float, MaxHp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDele_UpdateSh_TwoParams, float, CurSh, float, MaxSh);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDele_UpdateMag_OneParam, int, Mag);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDele_Shooting_UserName, const FString&, UserName);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDele_UpdateKillDeath_TwoParams, int, Kill, int, Death);
@@ -32,6 +33,12 @@ public:
 	void OnRep_MaxHp();
 
 	UFUNCTION()
+	void OnRep_CurSh();
+
+	UFUNCTION()
+	void OnRep_MaxSh();
+
+	UFUNCTION()
 	void OnRep_Mag();
 
 	UFUNCTION()
@@ -43,6 +50,9 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	bool AddDamage(float Damage);
+
+	UFUNCTION(BlueprintCallable)
+	float AddDamageSh(float Damage);
 
 	UFUNCTION(BlueprintCallable)
 	void AddMag();
@@ -57,6 +67,9 @@ public:
 	void AddHeal(float Heal);
 
 	UFUNCTION(BlueprintCallable)
+	void AddHealSh(float Heal);
+
+	UFUNCTION(BlueprintCallable)
 	void AddKill();
 
 	UFUNCTION(BlueprintCallable)
@@ -68,6 +81,12 @@ public:
 
 	UPROPERTY(ReplicatedUsing = OnRep_MaxHp)
 	float MaxHp;
+
+	UPROPERTY(ReplicatedUsing = OnRep_CurSh)
+	float CurSh;
+
+	UPROPERTY(ReplicatedUsing = OnRep_MaxSh)
+	float MaxSh;
 
 	UPROPERTY(ReplicatedUsing = OnRep_Mag)
 	int Mag;
@@ -86,6 +105,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
 	FDele_UpdateHp_TwoParams Fuc_Dele_UpdateHp;
+
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
+	FDele_UpdateSh_TwoParams Fuc_Dele_UpdateSh;
 
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
 	FDele_UpdateMag_OneParam Fuc_Dele_UpdateMag;

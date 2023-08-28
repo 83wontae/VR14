@@ -29,6 +29,11 @@ public:
 	void OnUpdateMyHp_Implementation(float CurHp, float MaxHp);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnUpdateMySh(float CurSh, float MaxSh);
+
+	void OnUpdateMySh_Implementation(float CurSh, float MaxSh);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void OnUpdateMyAmmo(int Ammo);
 
 	void OnUpdateMyAmmo_Implementation(int Ammo);

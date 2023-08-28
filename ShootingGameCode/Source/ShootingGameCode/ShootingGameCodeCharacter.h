@@ -178,6 +178,11 @@ public:
 	void OnUpdateHp_Implementation(float CurHp, float MaxHp);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnUpdateSh(float CurSh, float MaxSh);
+
+	void OnUpdateSh_Implementation(float CurSh, float MaxSh);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void OnUpdateUserName(const FString& UserName);
 
 	void OnUpdateUserName_Implementation(const FString& UserName);

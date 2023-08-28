@@ -188,7 +188,7 @@ void EmptyLinkFunctionForGeneratedCodeBaseItem() {}
 		{ "ModuleRelativePath", "Public/BaseItem.h" },
 	};
 #endif
-	const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_ABaseItem_Statics::NewProp_eItemType = { "eItemType", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, nullptr, nullptr, STRUCT_OFFSET(ABaseItem, eItemType), Z_Construct_UEnum_ItemPlugin_EItemType, METADATA_PARAMS(Z_Construct_UClass_ABaseItem_Statics::NewProp_eItemType_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ABaseItem_Statics::NewProp_eItemType_MetaData)) }; // 1287472050
+	const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_ABaseItem_Statics::NewProp_eItemType = { "eItemType", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, nullptr, nullptr, STRUCT_OFFSET(ABaseItem, eItemType), Z_Construct_UEnum_ItemPlugin_EItemType, METADATA_PARAMS(Z_Construct_UClass_ABaseItem_Statics::NewProp_eItemType_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ABaseItem_Statics::NewProp_eItemType_MetaData)) }; // 127725000
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ABaseItem_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ABaseItem_Statics::NewProp_StaticMesh,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ABaseItem_Statics::NewProp_Sphere,
@@ -232,9 +232,9 @@ void EmptyLinkFunctionForGeneratedCodeBaseItem() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_ABaseItem, ABaseItem::StaticClass, TEXT("ABaseItem"), &Z_Registration_Info_UClass_ABaseItem, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ABaseItem), 1775373473U) },
+		{ Z_Construct_UClass_ABaseItem, ABaseItem::StaticClass, TEXT("ABaseItem"), &Z_Registration_Info_UClass_ABaseItem, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ABaseItem), 3200043762U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_1760350697(TEXT("/Script/ItemPlugin"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_1419044257(TEXT("/Script/ItemPlugin"),
 		Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

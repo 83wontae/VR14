@@ -269,6 +269,15 @@ void AShootingGameCodeCharacter::EventGetItem_Implementation(EItemType itemType)
 			}
 			break;
 		}
+		case EItemType::IT_Shield:
+		{
+			AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+			if (IsValid(ps))
+			{
+				ps->AddHealSh(100);
+			}
+			break;
+		}
 	}
 }
 
@@ -363,6 +372,10 @@ void AShootingGameCodeCharacter::OnUpdateHp_Implementation(float CurHp, float Ma
 	}
 }
 
+void AShootingGameCodeCharacter::OnUpdateSh_Implementation(float CurSh, float MaxSh)
+{
+}
+
 void AShootingGameCodeCharacter::OnUpdateUserName_Implementation(const FString& UserName)
 {
 }
@@ -404,6 +417,9 @@ void AShootingGameCodeCharacter::BindPlayerState()
 	{
 		ps->Fuc_Dele_UpdateHp.AddDynamic(this, &AShootingGameCodeCharacter::OnUpdateHp);
 		OnUpdateHp(ps->CurHp, ps->MaxHp);
+
+		ps->Fuc_Dele_UpdateSh.AddDynamic(this, &AShootingGameCodeCharacter::OnUpdateSh);
+		OnUpdateSh(ps->CurSh, ps->MaxSh);
 
 		ps->Func_Dele_UpdateUserName.AddDynamic(this, &AShootingGameCodeCharacter::OnUpdateUserName);
 		OnUpdateUserName(ps->GetUserName());

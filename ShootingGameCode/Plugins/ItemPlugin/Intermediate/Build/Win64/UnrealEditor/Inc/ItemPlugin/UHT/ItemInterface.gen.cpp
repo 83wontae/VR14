@@ -39,6 +39,7 @@ void EmptyLinkFunctionForGeneratedCodeItemInterface() {}
 	const UECodeGen_Private::FEnumeratorParam Z_Construct_UEnum_ItemPlugin_EItemType_Statics::Enumerators[] = {
 		{ "EItemType::IT_Heal", (int64)EItemType::IT_Heal },
 		{ "EItemType::IT_Mag", (int64)EItemType::IT_Mag },
+		{ "EItemType::IT_Shield", (int64)EItemType::IT_Shield },
 	};
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UEnum_ItemPlugin_EItemType_Statics::Enum_MetaDataParams[] = {
@@ -47,6 +48,8 @@ void EmptyLinkFunctionForGeneratedCodeItemInterface() {}
 		{ "IT_Heal.Name", "EItemType::IT_Heal" },
 		{ "IT_Mag.DisplayName", "Mag" },
 		{ "IT_Mag.Name", "EItemType::IT_Mag" },
+		{ "IT_Shield.DisplayName", "Shield" },
+		{ "IT_Shield.Name", "EItemType::IT_Shield" },
 		{ "ModuleRelativePath", "Public/ItemInterface.h" },
 	};
 #endif
@@ -105,7 +108,7 @@ void EmptyLinkFunctionForGeneratedCodeItemInterface() {}
 		static const UECodeGen_Private::FFunctionParams FuncParams;
 	};
 	const UECodeGen_Private::FBytePropertyParams Z_Construct_UFunction_UItemInterface_EventGetItem_Statics::NewProp_itemType_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, 1, nullptr, nullptr, 0, nullptr, METADATA_PARAMS(nullptr, 0) };
-	const UECodeGen_Private::FEnumPropertyParams Z_Construct_UFunction_UItemInterface_EventGetItem_Statics::NewProp_itemType = { "itemType", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, nullptr, nullptr, STRUCT_OFFSET(ItemInterface_eventEventGetItem_Parms, itemType), Z_Construct_UEnum_ItemPlugin_EItemType, METADATA_PARAMS(nullptr, 0) }; // 1287472050
+	const UECodeGen_Private::FEnumPropertyParams Z_Construct_UFunction_UItemInterface_EventGetItem_Statics::NewProp_itemType = { "itemType", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, nullptr, nullptr, STRUCT_OFFSET(ItemInterface_eventEventGetItem_Parms, itemType), Z_Construct_UEnum_ItemPlugin_EItemType, METADATA_PARAMS(nullptr, 0) }; // 127725000
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UItemInterface_EventGetItem_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UItemInterface_EventGetItem_Statics::NewProp_itemType_Underlying,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UItemInterface_EventGetItem_Statics::NewProp_itemType,
@@ -146,7 +149,7 @@ void EmptyLinkFunctionForGeneratedCodeItemInterface() {}
 		(UObject* (*)())Z_Construct_UPackage__Script_ItemPlugin,
 	};
 	const FClassFunctionLinkInfo Z_Construct_UClass_UItemInterface_Statics::FuncInfo[] = {
-		{ &Z_Construct_UFunction_UItemInterface_EventGetItem, "EventGetItem" }, // 2270256894
+		{ &Z_Construct_UFunction_UItemInterface_EventGetItem, "EventGetItem" }, // 413013012
 	};
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UItemInterface_Statics::Class_MetaDataParams[] = {
@@ -211,12 +214,12 @@ void EmptyLinkFunctionForGeneratedCodeItemInterface() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FEnumRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_ItemInterface_h_Statics::EnumInfo[] = {
-		{ EItemType_StaticEnum, TEXT("EItemType"), &Z_Registration_Info_UEnum_EItemType, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 1287472050U) },
+		{ EItemType_StaticEnum, TEXT("EItemType"), &Z_Registration_Info_UEnum_EItemType, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 127725000U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_ItemInterface_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UItemInterface, UItemInterface::StaticClass, TEXT("UItemInterface"), &Z_Registration_Info_UClass_UItemInterface, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UItemInterface), 3324882198U) },
+		{ Z_Construct_UClass_UItemInterface, UItemInterface::StaticClass, TEXT("UItemInterface"), &Z_Registration_Info_UClass_UItemInterface, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UItemInterface), 3079485696U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_ItemInterface_h_4100154559(TEXT("/Script/ItemPlugin"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_ItemInterface_h_4084375017(TEXT("/Script/ItemPlugin"),
 		Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_ItemInterface_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_ItemInterface_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_ItemInterface_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_ItemInterface_h_Statics::EnumInfo));

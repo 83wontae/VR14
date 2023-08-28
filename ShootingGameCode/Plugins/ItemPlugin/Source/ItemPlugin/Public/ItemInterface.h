@@ -11,6 +11,7 @@ enum class EItemType : uint8
 {
 	IT_Heal UMETA(DisplayName = "Heal"),
 	IT_Mag UMETA(DisplayName = "Mag"),
+	IT_Shield UMETA(DisplayName = "Shield"),
 };
 
 UINTERFACE(Blueprintable)
