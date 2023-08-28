@@ -1,8 +1,15 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.2",
+	"EngineAssociation": "{6DE343FB-46B0-2AED-A2C5-C790E39CDC80}",
 	"Category": "",
 	"Description": "",
+	"Modules": [
+		{
+			"Name": "ShootingGame",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
 	"Plugins": [
 		{
 			"Name": "ModelingToolsEditorMode",
