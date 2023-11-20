@@ -227,15 +227,15 @@ void EmptyLinkFunctionForGeneratedCodeBaseItem() {}
 	}
 	DEFINE_VTABLE_PTR_HELPER_CTOR(ABaseItem);
 	ABaseItem::~ABaseItem() {}
-	struct Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics
+	struct Z_CompiledInDeferFile_FID_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics
 	{
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
-	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo[] = {
+	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo[] = {
 		{ Z_Construct_UClass_ABaseItem, ABaseItem::StaticClass, TEXT("ABaseItem"), &Z_Registration_Info_UClass_ABaseItem, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ABaseItem), 3200043762U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_1419044257(TEXT("/Script/ItemPlugin"),
-		Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Work_VR14_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_1419044257(TEXT("/Script/ItemPlugin"),
+		Z_CompiledInDeferFile_FID_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_ShootingGameCode_Plugins_ItemPlugin_Source_ItemPlugin_Public_BaseItem_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

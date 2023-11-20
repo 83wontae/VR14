@@ -1,15 +1,5 @@
 {
 	"RemapUnityFiles": 
 	{
-		"Module.ItemPlugin.cpp.obj": [
-			"TestPluginActor.gen.cpp.obj",
-			"BaseItem.cpp.obj",
-			"ItemPlugin.cpp.obj",
-			"TestPluginActor.cpp.obj",
-			"BaseItem.gen.cpp.obj",
-			"ItemInterface.gen.cpp.obj",
-			"ItemPlugin.init.gen.cpp.obj",
-			"ItemInterface.cpp.obj"
-		]
 	}
 }
