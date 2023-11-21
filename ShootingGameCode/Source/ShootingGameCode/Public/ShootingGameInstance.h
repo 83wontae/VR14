@@ -1,4 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// Unreal Session Guidebook
+// https://unreal.gg-labs.com/wiki-archives/networking/how-to-use-sessions-in-c++
 
 #pragma once
 
